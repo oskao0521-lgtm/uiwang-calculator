@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>의왕청계역 시티프라디움 디하모니 · 자금 계획 계산기</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg2: #f5f5f3;
+    --bg3: #ebebeb;
+    --text: #1a1a1a;
+    --text2: #666660;
+    --text3: #999994;
+    --border: rgba(0,0,0,0.12);
+    --border2: rgba(0,0,0,0.22);
+    --rad: 8px;
+    --rad-lg: 12px;
+    --c-green-bg: #eaf3de;
+    --c-green-text: #3b6d11;
+    --c-blue-bg: #e6f1fb;
+    --c-blue-text: #185fa5;
+    --c-amber-bg: #faeeda;
+    --c-amber-text: #854f0b;
+    --c-red-bg: #fcebeb;
+    --c-red-text: #a32d2d;
+    --c-gray-bg: #f1efe8;
+    --c-gray-text: #5f5e5a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1e1e1c;
+      --bg2: #2a2a28;
+      --bg3: #333331;
+      --text: #f0efe8;
+      --text2: #a8a8a0;
+      --text3: #707068;
+      --border: rgba(255,255,255,0.12);
+      --border2: rgba(255,255,255,0.22);
+      --c-green-bg: #173404;
+      --c-green-text: #c0dd97;
+      --c-blue-bg: #042c53;
+      --c-blue-text: #b5d4f4;
+      --c-amber-bg: #412402;
+      --c-amber-text: #fac775;
+      --c-red-bg: #501313;
+      --c-red-text: #f7c1c1;
+      --c-gray-bg: #2c2c2a;
+      --c-gray-text: #d3d1c7;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    background: var(--bg3);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+  }
+  .page {
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--bg);
+    border-radius: 16px;
+    padding: 28px 28px 40px;
+    box-shadow: 0 2px 24px rgba(0,0,0,0.08);
+  }
+  .page-hd { margin-bottom: 24px; border-bottom: 0.5px solid var(--border); padding-bottom: 20px; }
+  .page-hd h1 { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .page-hd p { font-size: 12px; color: var(--text2); }
+  .page-hd .badge { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 999px; background: var(--c-blue-bg); color: var(--c-blue-text); margin-top: 6px; }
+  .sl { font-size: 10px; font-weight: 600; letter-spacing: .08em; color: var(--text3); text-transform: uppercase; margin: 0 0 10px; }
+  .sg { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .sif label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px; }
+  select {
+    width: 100%; padding: 8px 10px; border: 0.5px solid var(--border2);
+    border-radius: var(--rad); background: var(--bg); color: var(--text);
+    font-size: 13px; font-family: inherit; cursor: pointer;
+    appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+    padding-right: 30px;
+  }
+  select:focus { outline: none; border-color: var(--c-blue-text); }
+  .mg4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 20px; }
+  .mc { background: var(--bg2); border-radius: var(--rad); padding: 14px; }
+  .mc.hs { background: var(--c-green-bg); }
+  .mc.hi { background: var(--c-blue-bg); }
+  .mc.hw { background: var(--c-amber-bg); }
+  .mc.hd2 { background: var(--c-red-bg); }
+  .ml { font-size: 11px; color: var(--text2); margin-bottom: 5px; }
+  .mc.hs .ml { color: var(--c-green-text); opacity: .8; }
+  .mc.hi .ml { color: var(--c-blue-text); opacity: .8; }
+  .mc.hw .ml { color: var(--c-amber-text); opacity: .8; }
+  .mc.hd2 .ml { color: var(--c-red-text); opacity: .8; }
+  .mv { font-size: 14px; font-weight: 600; color: var(--text); }
+  .mv2 { font-size: 18px; font-weight: 600; color: var(--text); }
+  .mc.hs .mv,.mc.hs .mv2 { color: var(--c-green-text); }
+  .mc.hi .mv,.mc.hi .mv2 { color: var(--c-blue-text); }
+  .mc.hw .mv,.mc.hw .mv2 { color: var(--c-amber-text); }
+  .mc.hd2 .mv,.mc.hd2 .mv2 { color: var(--c-red-text); }
+  .ms { font-size: 11px; color: var(--text3); margin-top: 3px; }
+  .mc.hs .ms { color: var(--c-green-text); opacity: .7; }
+  .mc.hi .ms { color: var(--c-blue-text); opacity: .7; }
+  .mc.hw .ms { color: var(--c-amber-text); opacity: .7; }
+  .mc.hd2 .ms { color: var(--c-red-text); opacity: .7; }
+  table.t { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 20px; table-layout: fixed; }
+  table.t th { font-size: 10.5px; font-weight: 600; color: var(--text2); padding: 6px 8px; border-bottom: 0.5px solid var(--border); text-align: left; }
+  table.t td { padding: 7px 8px; border-bottom: 0.5px solid var(--border); color: var(--text); word-break: keep-all; line-height: 1.4; }
+  table.t tr:last-child td { border-bottom: none; }
+  table.t .r { text-align: right; }
+  table.t .g { color: var(--text2); }
+  table.t .alt td { background: var(--bg2); }
+  table.t .sep td { background: var(--bg2); padding: 5px 8px; font-size: 10.5px; font-weight: 600; color: var(--text2); border-top: 0.5px solid var(--border2); }
+  table.t .subtotal td { background: var(--c-amber-bg); font-weight: 600; border-top: 0.5px solid var(--border2); color: var(--c-amber-text); }
+  .rr { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .rr label { font-size: 12px; color: var(--text2); min-width: 160px; }
+  .rr input[type=range] { flex: 1; accent-color: var(--c-blue-text); cursor: pointer; }
+  .rr span { font-size: 13px; font-weight: 600; min-width: 72px; text-align: right; color: var(--text); }
+  .box { background: var(--bg2); border-radius: var(--rad-lg); padding: 18px 20px; margin-bottom: 12px; }
+  .ir { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; gap: 8px; }
+  .ir:last-child { border-bottom: none; }
+  .ir .a { color: var(--text2); flex: 1; }
+  .ir .b { font-size: 11px; color: var(--text3); white-space: nowrap; }
+  .ir .c { font-weight: 600; white-space: nowrap; }
+  hr.d { border: none; border-top: 0.5px solid var(--border); margin: 24px 0; }
+  .sr { display: flex; justify-content: space-between; align-items: center; padding: 11px 14px; border-radius: var(--rad); margin-bottom: 6px; gap: 8px; }
+  .sr .la { font-size: 13px; line-height: 1.5; }
+  .sr .ra { font-size: 15px; font-weight: 600; white-space: nowrap; }
+  .so { background: var(--c-green-bg); } .so .la,.so .ra { color: var(--c-green-text); }
+  .si2 { background: var(--c-blue-bg); } .si2 .la,.si2 .ra { color: var(--c-blue-text); }
+  .sw { background: var(--c-amber-bg); } .sw .la,.sw .ra { color: var(--c-amber-text); }
+  .sd { background: var(--c-red-bg); } .sd .la,.sd .ra { color: var(--c-red-text); }
+  .stl { background: var(--bg2); border: 0.5px solid var(--border2); }
+  .stl .la { color: var(--text); font-weight: 600; } .stl .ra { color: var(--text); font-size: 18px; }
+  .nt { border-left: 2px solid var(--c-blue-text); padding: 10px 14px; font-size: 12px; color: var(--text2); line-height: 1.7; margin-top: 8px; }
+  .note-s { font-size: 12px; color: var(--text2); line-height: 1.6; margin-bottom: 20px; }
+  .pill { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 999px; margin-left: 4px; vertical-align: middle; white-space: nowrap; }
+  .pi { background: var(--c-blue-bg); color: var(--c-blue-text); }
+  .ps { background: var(--c-green-bg); color: var(--c-green-text); }
+  .pw { background: var(--c-amber-bg); color: var(--c-amber-text); }
+  .pd { background: var(--c-red-bg); color: var(--c-red-text); }
+  .pj { background: var(--bg2); color: var(--text2); border: 0.5px solid var(--border2); }
+  .oq { display: flex; gap: 8px; margin-bottom: 10px; }
+  .oq button { flex: 1; padding: 8px; font-size: 12px; cursor: pointer; border-radius: var(--rad); font-family: inherit; transition: all .15s; }
+  .oq .on { background: var(--c-blue-bg); color: var(--c-blue-text); border: 0.5px solid rgba(24,95,165,.3); font-weight: 600; }
+  .oq .off { background: transparent; color: var(--text2); border: 0.5px solid var(--border); }
+  .og { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+  .oi { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--bg); border-radius: var(--rad); border: 0.5px solid var(--border); cursor: pointer; transition: all .12s; }
+  .oi.ck { border-color: rgba(24,95,165,.4); background: var(--c-blue-bg); }
+  .oi input { display: none; }
+  .oi .nm { font-size: 12px; flex: 1; line-height: 1.4; color: var(--text); }
+  .oi.ck .nm { color: var(--c-blue-text); }
+  .oi .pr { font-size: 11px; color: var(--text2); white-space: nowrap; }
+  .oi.ck .pr { color: var(--c-blue-text); }
+  .otot { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-radius: var(--rad); background: var(--c-amber-bg); margin-top: 4px; }
+  .otot span:first-child { font-size: 13px; color: var(--c-amber-text); }
+  .otot span:last-child { font-size: 16px; font-weight: 600; color: var(--c-amber-text); }
+  .pt { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 6px; margin-bottom: 10px; }
+  .pc { background: var(--bg2); border-radius: var(--rad); padding: 10px 8px; text-align: center; }
+  .pc .yr { font-size: 10px; color: var(--text3); margin-bottom: 4px; }
+  .pc .dp { font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.4; }
+  .pc .ch { font-size: 10px; margin-top: 3px; }
+  .pc.cur { border: 0.5px solid rgba(24,95,165,.4); background: var(--c-blue-bg); }
+  .pc.cur .yr,.pc.cur .dp { color: var(--c-blue-text); }
+  .mfcard { border-radius: var(--rad-lg); border: 0.5px solid var(--border); overflow: hidden; margin-bottom: 12px; }
+  .mfcard-hd { padding: 14px 16px; background: var(--bg2); border-bottom: 0.5px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .mfcard-hd .ttl { font-size: 13px; font-weight: 600; color: var(--text); }
+  .mfcard-hd .sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .mfcard-hd .big { font-size: 20px; font-weight: 700; color: var(--c-red-text); }
+  .mfcard-body { padding: 0 16px; }
+  .mf-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; gap: 12px; }
+  .mf-row:last-child { border-bottom: none; }
+  .mf-l { color: var(--text2); line-height: 1.5; flex: 1; }
+  .mf-tag { font-size: 10px; padding: 1px 6px; border-radius: 999px; margin-left: 4px; vertical-align: middle; }
+  .mf-r { font-weight: 600; white-space: nowrap; }
+  .mf-r.c-s { color: var(--c-green-text); }
+  .mf-r.c-i { color: var(--c-blue-text); }
+  .mf-r.c-w { color: var(--c-amber-text); }
+  .mf-r.c-d { color: var(--c-red-text); }
+  .mf-r.c-g { color: var(--text3); }
+  .mfsec { padding: 8px 0 4px; font-size: 10.5px; font-weight: 600; color: var(--text3); border-bottom: 0.5px solid var(--border); }
+  .footer { margin-top: 40px; padding-top: 16px; border-top: 0.5px solid var(--border); text-align: center; font-size: 11px; color: var(--text3); line-height: 1.8; }
+  @media(max-width:600px) {
+    body { padding: 0 0 40px; }
+    .page { border-radius: 0; padding: 20px 16px 32px; }
+    .mg4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .sg { grid-template-columns: 1fr; }
+    .og { grid-template-columns: 1fr; }
+    .pt { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .rr { flex-wrap: wrap; }
+    .rr label { min-width: 100%; }
+    .mfcard-hd { flex-direction: column; align-items: flex-start; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="page-hd">
+  <h1>의왕청계역 시티프라디움 디하모니</h1>
+  <p>공공지원민간임대 자금 계획 계산기 · 의왕시 포일동 M-1블록</p>
+  <span class="badge">입주 예정 2028년 4월 · 청약 2026.03.17~18</span>
+</div>
+
+<p class="sl">타입 및 층수 선택</p>
+<div class="sg">
+  <div class="sif"><label>공급 타입</label><select id="tp" onchange="onTP()"></select></div>
+  <div class="sif"><label>층수</label><select id="fl" onchange="calc()"></select></div>
+</div>
+
+<p class="sl">임대보증금 구성</p>
+<div class="mg4">
+  <div class="mc"><div class="ml">총 임대보증금</div><div class="mv2" id="v1">—</div><div class="ms" id="v1s">—</div></div>
+  <div class="mc hs"><div class="ml">계약금 (10%)</div><div class="mv" id="v2">—</div><div class="ms">무조건 내 자금</div></div>
+  <div class="mc hi"><div class="ml">중도금 (49%)</div><div class="mv" id="v3">—</div><div class="ms">집단대출 이자후불</div></div>
+  <div class="mc hw"><div class="ml">잔금 (41%)</div><div class="mv" id="v4">—</div><div class="ms">입주 시 전세대출+자기자금</div></div>
+</div>
+
+<p class="sl">납부 일정</p>
+<table class="t">
+  <colgroup><col style="width:27%"><col style="width:23%"><col style="width:22%"><col style="width:10%"><col style="width:18%"></colgroup>
+  <thead><tr><th>항목</th><th>납부 예정일</th><th class="r">금액</th><th class="r">비율</th><th class="r">성격</th></tr></thead>
+  <tbody id="tb"></tbody>
+</table>
+
+<hr class="d">
+
+<p class="sl">추가선택품목 (옵션)</p>
+<div class="oq">
+  <button id="bFull" class="on" onclick="setOpts(true)">풀옵션 전체 선택</button>
+  <button id="bNone" class="off" onclick="setOpts(false)">무옵션 전체 해제</button>
+</div>
+<div class="og" id="og"></div>
+<div class="otot">
+  <span>선택 옵션 합계 <span style="font-size:10px;opacity:.7">(무조건 내 자금 · 입주 시 납부)</span></span>
+  <span id="ot">0원</span>
+</div>
+<p class="note-s" style="margin-top:10px;">옵션은 임대보증금 별도 계약. 취소 시 계약금 위약금 처리.</p>
+
+<hr class="d">
+
+<p class="sl">대출 조건 설정</p>
+<div class="box">
+  <div class="rr">
+    <label>중도금 대출 이자율 (연)</label>
+    <input type="range" id="rt" min="2" max="9" step="0.1" value="4.5" oninput="onRT()">
+    <span id="rtv">4.5%</span>
+  </div>
+  <div class="rr">
+    <label>전세대출 비율 (보증금 대비)</label>
+    <input type="range" id="jsr" min="0" max="90" step="5" value="70" oninput="onJSR()">
+    <span id="jsrv">70%</span>
+  </div>
+  <div class="rr" style="margin-bottom:0">
+    <label>전세대출 이자율 (연)</label>
+    <input type="range" id="jrr" min="2" max="7" step="0.1" value="3.5" oninput="onJRR()">
+    <span id="jrrv">3.5%</span>
+  </div>
+</div>
+<p class="note-s">전세대출로 입주 시 중도금(49%) 상환 + 잔금 일부 충당. 전세대출 한도·조건은 금융기관 심사 기준에 따라 개인별 상이.</p>
+
+<hr class="d">
+
+<p class="sl">중도금 대출 이자 상세 (이자후불제 · 입주 시 일괄 정산)</p>
+<div class="box">
+  <div id="intR"></div>
+  <div style="border-top:0.5px solid var(--border);padding-top:10px;margin-top:2px;display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-size:13px;font-weight:600;color:var(--text);">누적 이자 합계 <span style="font-size:11px;font-weight:400;color:var(--text2)">(내 자금 필수 · 입주 시 일괄)</span></span>
+    <span id="ti" style="font-size:16px;font-weight:700;color:var(--c-amber-text)">—</span>
+  </div>
+</div>
+
+<hr class="d">
+
+<p class="sl">보증금 갱신 인상 시뮬레이션 (2년 단위 · 최대 10년)</p>
+<div class="box">
+  <div class="rr" style="margin-bottom:0">
+    <label>갱신 인상률 (2년마다)</label>
+    <input type="range" id="ir2" min="0" max="5" step="0.5" value="3" oninput="onIR()">
+    <span id="irv">3.0%</span>
+  </div>
+  <p style="font-size:11px;color:var(--text3);margin:6px 0 14px">법령상 최대 5% 이내 · 2년 단위 갱신 시 적용</p>
+  <div class="pt" id="pt"></div>
+  <div id="projSum"></div>
+</div>
+<p class="note-s">10년 의무임대기간 동안 2년마다 갱신. 소득요건 30%p 초과 인상 시 임대인 갱신 거절 가능.</p>
+
+<hr class="d">
+
+<p class="sl">단계별 자금 흐름</p>
+<div id="csf"></div>
+
+<hr class="d">
+
+<p class="sl">실제 필요 자기자금</p>
+<div class="mfcard">
+  <div class="mfcard-hd">
+    <div>
+      <div class="ttl">입주까지 직접 조달해야 할 내 돈</div>
+      <div class="sub">계약금 + 잔금 자기자금분 + 이자후불 + 옵션</div>
+    </div>
+    <div class="big" id="myFundBig">—</div>
+  </div>
+  <div class="mfcard-body" id="myFundBody"></div>
+</div>
+
+<hr class="d">
+
+<p class="sl">입주 후 월 이자</p>
+<div id="monthlyBox"></div>
+<p class="note-s" style="margin-bottom:0">전세대출은 이자만 납부하는 만기일시상환 구조. 중도금 대출은 입주 시 전세대출로 상환 → 이후 잔여 이자 없음.</p>
+
+<div class="footer">
+  본 계산기는 참고용입니다. 실제 대출 조건·이자율은 금융기관 심사에 따라 상이합니다.<br>
+  임대보증금 및 옵션 금액은 의왕청계역 시티프라디움 디하모니 임차인 모집공고 (2026.03.12) 기준.
+</div>
+
+</div>
+
+<script>
+const D={
+  '71A · 일반공급':{area:'71.56㎡',tp:'일반공급',grp:'71A',f:{4:605000000,5:611000000,6:614000000,7:617000000,8:617000000,9:617000000,10:623000000}},
+  '71A-1 · 특별공급':{area:'71.56㎡',tp:'특별공급',grp:'71A',f:{2:427700000,3:441000000}},
+  '71B · 일반공급':{area:'71.42㎡',tp:'일반공급',grp:'71B',f:{4:598000000,5:605000000,6:608000000,7:611000000}},
+  '71B-1 · 특별공급':{area:'71.42㎡',tp:'특별공급',grp:'71B',f:{2:423000000,3:436000000,4:441000000}},
+  '84A · 일반공급':{area:'84.08㎡',tp:'일반공급',grp:'84A',f:{4:691000000,5:692000000,6:693000000,7:694000000,8:695000000,9:696000000,10:697000000,11:698000000,12:699000000}},
+  '84A-1 · 특별공급':{area:'84.08㎡',tp:'특별공급',grp:'84A',f:{2:490000000,3:505400000}},
+  '84B · 일반공급':{area:'84.25㎡',tp:'일반공급',grp:'84B',f:{4:691000000,5:692000000,6:693000000,7:694000000,8:695000000,9:696000000,10:697000000,11:698000000,12:699000000,13:699000000,14:699000000,15:699000000}},
+  '84B-1 · 특별공급':{area:'84.25㎡',tp:'특별공급',grp:'84B',f:{2:488250000,3:503300000}}
+};
+const OD={
+  '71A':[{n:'바닥 광폭 강마루',p:2900000},{n:'천장 디밍등',p:1500000},{n:'시스템에어컨 4대',p:8600000},{n:'현관팬트리 가구도어+센서등',p:2900000},{n:'3연동 중문',p:1300000},{n:'거실 아트월 포세린 600×1200',p:2750000},{n:'거실 특화 직부등+간접등',p:1700000},{n:'복도 팬트리 가구도어+선반',p:2100000},{n:'주방상판 엔지니어드스톤',p:4100000},{n:'식탁 특화 등기구',p:650000},{n:'사각싱크볼+디자인수전',p:1650000},{n:'주방 아일랜드장',p:2900000},{n:'주방가전 3구 인덕션',p:900000},{n:'드레스룸 슬라이딩+화장대',p:5800000},{n:'천장형 제습기',p:2450000},{n:'침실 붙박이장',p:4000000},{n:'욕실 복합환풍기',p:1700000}],
+  '71B':[{n:'바닥 광폭 강마루',p:3000000},{n:'천장 디밍등',p:1500000},{n:'시스템에어컨 4대',p:8600000},{n:'현관팬트리 가구도어+센서등',p:2800000},{n:'3연동 중문',p:1300000},{n:'거실 아트월 포세린 600×1200',p:2750000},{n:'거실 특화 직부등+간접등',p:1700000},{n:'주방상판 엔지니어드스톤',p:5000000},{n:'식탁 특화 등기구',p:650000},{n:'사각싱크볼+디자인수전',p:1650000},{n:'주방 아일랜드장',p:3000000},{n:'주방 팬트리+도어+선반',p:1700000},{n:'도배마감 장식장',p:8500000},{n:'주방가전 3구 인덕션',p:900000},{n:'드레스룸 슬라이딩+화장대',p:5200000},{n:'천장형 제습기',p:2450000},{n:'침실 붙박이장',p:4150000},{n:'욕실 복합환풍기',p:1700000}],
+  '84A':[{n:'바닥 광폭 강마루',p:3100000},{n:'천장 디밍등',p:1700000},{n:'시스템에어컨 4대',p:8900000},{n:'현관팬트리 가구도어+센서등',p:3200000},{n:'3연동 중문',p:1400000},{n:'거실 아트월 포세린 600×1200',p:2750000},{n:'거실 특화 직부등+간접등',p:1700000},{n:'주방상판 엔지니어드스톤',p:5300000},{n:'식탁 특화 등기구',p:650000},{n:'사각싱크볼+디자인수전',p:1650000},{n:'주방 아일랜드장',p:3100000},{n:'도배마감 장식장',p:8600000},{n:'주방가전 3구 인덕션',p:900000},{n:'드레스룸 슬라이딩+화장대',p:5900000},{n:'천장형 제습기',p:2450000},{n:'침실 붙박이장',p:4200000},{n:'욕실 복합환풍기',p:1700000}],
+  '84B':[{n:'바닥 광폭 강마루',p:3500000},{n:'천장 디밍등',p:1700000},{n:'시스템에어컨 4대',p:8900000},{n:'현관팬트리 가구도어+센서등',p:3000000},{n:'3연동 중문',p:1400000},{n:'거실 아트월 포세린 600×1200',p:2750000},{n:'거실 특화 직부등+간접등',p:1700000},{n:'주방상판 엔지니어드스톤',p:6000000},{n:'식탁 특화 등기구',p:650000},{n:'사각싱크볼+디자인수전',p:1650000},{n:'주방 아일랜드장',p:3200000},{n:'주방 팬트리+도어+선반',p:1700000},{n:'도배마감 장식장',p:8700000},{n:'주방가전 3구 인덕션',p:900000},{n:'드레스룸 슬라이딩+화장대',p:5300000},{n:'천장형 제습기',p:2450000},{n:'침실 붙박이장',p:4800000},{n:'욕실 복합환풍기',p:1700000}]
+};
+const MD=[new Date('2026-09-10'),new Date('2027-01-11'),new Date('2027-05-10'),new Date('2027-09-10'),new Date('2028-01-10')];
+const MR=[.10,.10,.10,.10,.09];
+const MI=new Date('2028-04-01');
+const CD=new Date('2026-03-30');
+let curDep=0,curGrp='71A';
+
+function dbc(a,b){return Math.round((b-a)/86400000);}
+function moB(a,b){return Math.round(dbc(a,b)/30.4);}
+function pct(a,b){return((a/b)*100).toFixed(1)+'%';}
+function won(n){
+  n=Math.round(n);
+  const ok=Math.floor(n/100000000);
+  const man=Math.round((n%100000000)/10000);
+  if(ok>0&&man>0)return ok+'억 '+man.toLocaleString('ko-KR')+'만원';
+  if(ok>0)return ok+'억원';
+  return man.toLocaleString('ko-KR')+'만원';
+}
+function fmtD(d){return d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0');}
+
+function init(){
+  const s=document.getElementById('tp');
+  Object.keys(D).forEach(k=>{const o=document.createElement('option');o.value=k;o.text=k+' ('+D[k].area+')';s.appendChild(o);});
+  onTP();
+}
+function onTP(){
+  const key=document.getElementById('tp').value;
+  const fs=document.getElementById('fl');
+  fs.innerHTML='';
+  Object.keys(D[key].f).sort((a,b)=>+a-+b).forEach(f=>{
+    const o=document.createElement('option');o.value=f;o.text=f+'층 — '+won(D[key].f[+f]);fs.appendChild(o);
+  });
+  buildOpts(D[key].grp);calc();
+}
+function buildOpts(grp){
+  curGrp=grp;
+  const og=document.getElementById('og');og.innerHTML='';
+  OD[grp].forEach((item,i)=>{
+    const d=document.createElement('label');d.className='oi ck';
+    d.innerHTML=`<input type="checkbox" checked data-i="${i}"><span class="nm">${item.n}</span><span class="pr">${(item.p/10000).toLocaleString('ko-KR')}만</span>`;
+    d.onclick=function(){const cb=this.querySelector('input');cb.checked=!cb.checked;this.classList.toggle('ck',cb.checked);updateOptBtn();calc();};
+    og.appendChild(d);
+  });
+  updateOptBtn();
+}
+function setOpts(all){
+  document.querySelectorAll('#og .oi').forEach(el=>{const cb=el.querySelector('input');cb.checked=all;el.classList.toggle('ck',all);});
+  updateOptBtn();calc();
+}
+function updateOptBtn(){
+  const cbs=[...document.querySelectorAll('#og input')];
+  const chk=cbs.filter(c=>c.checked).length;
+  document.getElementById('bFull').className=chk===cbs.length?'on':'off';
+  document.getElementById('bNone').className=chk===0?'on':'off';
+}
+function calcOpts(){
+  let tot=0;
+  document.querySelectorAll('#og .oi').forEach((el,i)=>{if(el.querySelector('input').checked)tot+=OD[curGrp][i].p;});
+  document.getElementById('ot').textContent=won(tot);
+  return tot;
+}
+function onRT(){document.getElementById('rtv').textContent=parseFloat(document.getElementById('rt').value).toFixed(1)+'%';calc();}
+function onJSR(){document.getElementById('jsrv').textContent=document.getElementById('jsr').value+'%';calc();}
+function onJRR(){document.getElementById('jrrv').textContent=parseFloat(document.getElementById('jrr').value).toFixed(1)+'%';calc();}
+function onIR(){document.getElementById('irv').textContent=parseFloat(document.getElementById('ir2').value).toFixed(1)+'%';calcProj();}
+function calcProj(){
+  if(!curDep)return;
+  const rate=parseFloat(document.getElementById('ir2').value)/100;
+  const yrs=[0,2,4,6,8,10];
+  const deps=yrs.map(y=>Math.round(curDep*Math.pow(1+rate,y/2)));
+  document.getElementById('pt').innerHTML=yrs.map((y,i)=>{
+    const cls=i===0?'pc cur':'pc';
+    const ch=i===0?`<span class="ch" style="color:var(--text3)">최초 입주</span>`:`<span class="ch" style="color:var(--c-red-text)">+${won(deps[i]-curDep)}</span>`;
+    return `<div class="${cls}"><div class="yr">${y===0?'2028년':y+'년 후'}</div><div class="dp">${won(deps[i])}</div>${ch}</div>`;
+  }).join('');
+  document.getElementById('projSum').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--c-red-bg);border-radius:var(--rad);font-size:13px;"><span style="color:var(--c-red-text)">10년 후 보증금 (매 갱신 ${(rate*100).toFixed(1)}% 인상 가정)</span><span style="font-size:15px;font-weight:700;color:var(--c-red-text)">${won(deps[5])} (+${won(deps[5]-curDep)})</span></div>`;
+}
+function calc(){
+  const key=document.getElementById('tp').value;
+  const fl=+document.getElementById('fl').value;
+  const dep=D[key].f[fl];
+  curDep=dep;
+  const midRate=parseFloat(document.getElementById('rt').value)/100;
+  const jsrPct=+document.getElementById('jsr').value/100;
+  const jrrRate=parseFloat(document.getElementById('jrr').value)/100;
+  const down=Math.round(dep*.10);
+  const down1=10000000;
+  const down2=down-down1;
+  const final_=Math.round(dep*.41);
+  const midT=Math.round(dep*.49);
+  const jsAmt=Math.round(dep*jsrPct);
+  const js_for_mid=Math.min(jsAmt,midT);
+  const js_for_final=Math.max(0,jsAmt-midT);
+  const final_own=Math.max(0,final_-js_for_final);
+  const mid_shortfall=Math.max(0,midT-jsAmt);
+  document.getElementById('v1').textContent=won(dep);
+  document.getElementById('v1s').textContent=D[key].tp+' · '+fl+'층';
+  document.getElementById('v2').textContent=won(down);
+  document.getElementById('v3').textContent=won(midT);
+  document.getElementById('v4').textContent=won(final_);
+  let totInt=0;
+  const intRows=MD.map((d,i)=>{
+    const amt=Math.round(dep*MR[i]);
+    const days=dbc(d,MI);
+    const int=Math.round(amt*midRate*days/365);
+    totInt+=int;
+    return{amt,int,moBefore:moB(d,MI),moAfterC:moB(CD,d)};
+  });
+  document.getElementById('intR').innerHTML=intRows.map((r,i)=>`
+    <div class="ir">
+      <span class="a">${i+1}회차 ${(MR[i]*100).toFixed(0)}% · ${won(r.amt)}</span>
+      <span class="b">계약 후 약 ${r.moAfterC}개월 · 입주 ${r.moBefore}개월 전</span>
+      <span class="c">${won(r.int)}</span>
+    </div>`).join('');
+  document.getElementById('ti').textContent=won(totInt);
+  const optTot=calcOpts();
+  const moveInTotal=midT+final_+totInt+(optTot||0);
+  let tbHtml='';
+  tbHtml+=`<tr class="sep"><td colspan="5">계약 ~ 중도금 납부</td></tr>`;
+  tbHtml+=`<tr><td>계약금 1차<span class="pill ps">내 자금</span></td><td class="g">2026.03.30 계약 시</td><td class="r">${won(down1)}</td><td class="r g">${pct(down1,dep)}</td><td class="r"><span class="pill ps">내 자금</span></td></tr>`;
+  tbHtml+=`<tr class="alt"><td>계약금 2차<span class="pill ps">내 자금</span></td><td class="g">2026.04.29 (30일 내)</td><td class="r">${won(down2)}</td><td class="r g">${pct(down2,dep)}</td><td class="r"><span class="pill ps">내 자금</span></td></tr>`;
+  intRows.forEach((r,i)=>{
+    const cls=i%2===0?'':'alt';
+    tbHtml+=`<tr class="${cls}"><td>중도금 ${i+1}회차</td><td class="g">${fmtD(MD[i])} <span style="font-size:10px;color:var(--text3)">입주 ${r.moBefore}개월 전</span></td><td class="r">${won(r.amt)}</td><td class="r g">${(MR[i]*100).toFixed(0)}%</td><td class="r"><span class="pill pi">집단대출</span></td></tr>`;
+  });
+  tbHtml+=`<tr class="sep"><td colspan="5">입주 시 (2028년 4월) — 중도금 상환 + 잔금 동시 처리</td></tr>`;
+  if(mid_shortfall>0){
+    tbHtml+=`<tr><td>중도금 상환 (전세대출분)</td><td class="g">2028.04 입주 시</td><td class="r">${won(jsAmt)}</td><td class="r g">${pct(jsAmt,dep)}</td><td class="r"><span class="pill pj">전세대출</span></td></tr>`;
+    tbHtml+=`<tr class="alt"><td>중도금 상환 (자기자금 부족분)</td><td class="g">2028.04 입주 시</td><td class="r">${won(mid_shortfall)}</td><td class="r g">${pct(mid_shortfall,dep)}</td><td class="r"><span class="pill ps">내 자금</span></td></tr>`;
+    tbHtml+=`<tr><td>잔금</td><td class="g">2028.04 입주 시</td><td class="r">${won(final_)}</td><td class="r g">${pct(final_,dep)}</td><td class="r"><span class="pill ps">내 자금</span></td></tr>`;
+  } else {
+    tbHtml+=`<tr><td>중도금 대출 상환</td><td class="g">2028.04 입주 시</td><td class="r">${won(midT)}</td><td class="r g">49.0%</td><td class="r"><span class="pill pj">전세대출</span></td></tr>`;
+    if(js_for_final>0&&final_own>0){
+      tbHtml+=`<tr class="alt"><td>잔금 (전세대출분)</td><td class="g">2028.04 입주 시</td><td class="r">${won(js_for_final)}</td><td class="r g">${pct(js_for_final,dep)}</td><td class="r"><span class="pill pj">전세대출</span></td></tr>`;
+      tbHtml+=`<tr><td>잔금 (자기자금)</td><td class="g">2028.04 입주 시</td><td class="r">${won(final_own)}</td><td class="r g">${pct(final_own,dep)}</td><td class="r"><span class="pill ps">내 자금</span></td></tr>`;
+    } else if(js_for_final>=final_){
+      tbHtml+=`<tr class="alt"><td>잔금 (전세대출 전액)</td><td class="g">2028.04 입주 시</td><td class="r">${won(final_)}</td><td class="r g">41.0%</td><td class="r"><span class="pill pj">전세대출</span></td></tr>`;
+    } else {
+      tbHtml+=`<tr class="alt"><td>잔금 (자기자금)</td><td class="g">2028.04 입주 시</td><td class="r">${won(final_own)}</td><td class="r g">${pct(final_own,dep)}</td><td class="r"><span class="pill ps">내 자금</span></td></tr>`;
+    }
+  }
+  tbHtml+=`<tr><td>이자후불 이자 정산<span class="pill pw">내 자금 필수</span></td><td class="g">2028.04 입주 시</td><td class="r">${won(totInt)}</td><td class="r g">—</td><td class="r"><span class="pill ps">내 자금</span></td></tr>`;
+  if(optTot>0){
+    tbHtml+=`<tr class="alt"><td>옵션 비용<span class="pill pw">내 자금 필수</span></td><td class="g">2028.04 입주 시</td><td class="r">${won(optTot)}</td><td class="r g">—</td><td class="r"><span class="pill ps">내 자금</span></td></tr>`;
+  }
+  tbHtml+=`<tr class="subtotal"><td>입주 시 합계</td><td class="g" style="color:var(--c-amber-text)">전세대출+내자금+이자+옵션</td><td class="r">${won(moveInTotal)}</td><td class="r g">90%+ α</td><td class="r"><span class="pill pw">합산</span></td></tr>`;
+  document.getElementById('tb').innerHTML=tbHtml;
+  const myFundTotal=down+final_own+totInt+(optTot||0)+mid_shortfall;
+  const atMoveIn=final_own+totInt+(optTot||0)+mid_shortfall;
+  document.getElementById('csf').innerHTML=`
+    <div class="sr so"><span class="la">계약금 (1·2차) <span style="font-size:11px;opacity:.75">내 자금 필수</span></span><span class="ra">${won(down)}</span></div>
+    <div class="sr si2"><span class="la">중도금 1~5회차 <span style="font-size:11px;opacity:.75">집단대출 이자후불</span></span><span class="ra">${won(midT)}</span></div>
+    <div class="sr si2"><span class="la">입주 시 전세대출 실행 → 중도금 상환 + 잔금 충당</span><span class="ra">${won(jsAmt)}</span></div>
+    <div class="sr sw"><span class="la">이자후불 누적 이자 <span style="font-size:11px;opacity:.75">내 자금 필수 · 입주 시 일괄</span></span><span class="ra">${won(totInt)}</span></div>
+    ${final_own>0?`<div class="sr so"><span class="la">잔금 자기자금분 <span style="font-size:11px;opacity:.75">(잔금 41% - 전세대출 잔금충당분)</span></span><span class="ra">${won(final_own)}</span></div>`:''}
+    ${mid_shortfall>0?`<div class="sr sd"><span class="la">중도금 부족분 <span style="font-size:11px;opacity:.75">전세대출이 중도금보다 부족한 경우</span></span><span class="ra">${won(mid_shortfall)}</span></div>`:''}
+    ${optTot>0?`<div class="sr sw"><span class="la">옵션 비용 <span style="font-size:11px;opacity:.75">내 자금 필수 · 별도 납부</span></span><span class="ra">${won(optTot)}</span></div>`:''}`;
+  document.getElementById('myFundBig').textContent=won(myFundTotal);
+  document.getElementById('myFundBody').innerHTML=`
+    <div class="mfsec">계약 시 납부 (이미 지출)</div>
+    <div class="mf-row"><span class="mf-l">계약금 1차 <span class="mf-tag ps">내 자금</span></span><span class="mf-r c-s">${won(down1)}</span></div>
+    <div class="mf-row"><span class="mf-l">계약금 2차 <span class="mf-tag ps">내 자금</span></span><span class="mf-r c-s">${won(down2)}</span></div>
+    <div class="mfsec" style="margin-top:4px">입주 시 현금 (한 번에 필요)</div>
+    ${final_own>0?`<div class="mf-row"><span class="mf-l">잔금 자기자금 (잔금의 ${pct(final_own,final_)}) <span class="mf-tag ps">내 자금</span></span><span class="mf-r c-s">${won(final_own)}</span></div>`:`<div class="mf-row"><span class="mf-l">잔금 자기자금 <span class="mf-tag pi">전세대출 전액 커버</span></span><span class="mf-r c-g">0원</span></div>`}
+    ${mid_shortfall>0?`<div class="mf-row"><span class="mf-l">중도금 부족분 상환 <span class="mf-tag pw">내 자금</span></span><span class="mf-r c-w">${won(mid_shortfall)}</span></div>`:''}
+    <div class="mf-row"><span class="mf-l">이자후불 이자 정산 <span class="mf-tag pw">내 자금 필수</span></span><span class="mf-r c-w">${won(totInt)}</span></div>
+    ${optTot>0?`<div class="mf-row"><span class="mf-l">옵션 비용 <span class="mf-tag pw">내 자금 필수</span></span><span class="mf-r c-w">${won(optTot)}</span></div>`:''}
+    <div class="mfsec" style="margin-top:4px">대출 (내 돈 아님)</div>
+    <div class="mf-row"><span class="mf-l">중도금 집단대출 <span class="mf-tag pi">전세대출로 상환</span></span><span class="mf-r c-g">${won(midT)}</span></div>
+    <div class="mf-row"><span class="mf-l">전세대출 <span class="mf-tag pj">입주 후 이자납부</span></span><span class="mf-r c-g">${won(jsAmt)}</span></div>
+    <div style="padding:12px 0 0;border-top:1px solid var(--border);margin-top:4px">
+      <div class="mf-row" style="border-bottom:none;padding-top:4px"><span class="mf-l" style="font-weight:600;color:var(--text)">입주까지 내 돈 총계</span><span class="mf-r c-d" style="font-size:16px">${won(myFundTotal)}</span></div>
+      <div class="mf-row" style="border-bottom:none;padding-top:2px"><span class="mf-l" style="font-size:12px;color:var(--text2)">— 그 중 입주 시 한 번에 필요한 현금</span><span class="mf-r c-w">${won(atMoveIn)}</span></div>
+    </div>`;
+  const jsMonthly=Math.round(jsAmt*jrrRate/12);
+  document.getElementById('monthlyBox').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px;background:var(--c-red-bg);border-radius:var(--rad-lg);margin-bottom:10px">
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--c-red-text)">전세대출 월 이자</div>
+        <div style="font-size:11px;color:var(--c-red-text);opacity:.85;margin-top:3px">대출 원금 ${won(jsAmt)} (보증금의 ${(jsrPct*100).toFixed(0)}%) · 연 ${(jrrRate*100).toFixed(1)}% · 이자만 납부</div>
+      </div>
+      <div style="font-size:22px;font-weight:700;color:var(--c-red-text)">${won(jsMonthly)}<span style="font-size:14px;font-weight:400"> / 월</span></div>
+    </div>
+    <div style="background:var(--bg2);border-radius:var(--rad);padding:12px 14px;font-size:12px;color:var(--text2);line-height:1.8">
+      · 중도금 대출 이자 → 입주 시 일괄 정산 후 소멸, 이후 월 납부 없음<br>
+      · 전세대출(${won(jsAmt)}) = 중도금 상환(${won(midT)}) + 잔금 충당(${won(Math.max(0,Math.min(js_for_final,final_)))})<br>
+      · 전세대출 비율 높일수록 → 월 이자↑, 입주 시 현금 부담↓
+    </div>`;
+  calcProj();
+}
+init();
+</script>
+</body>
+</html>
